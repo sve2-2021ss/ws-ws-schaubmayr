@@ -1,4 +1,6 @@
 using GraphQLService.DAL;
+using GraphQLService.Query.Implementations;
+using GraphQLService.Query.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +29,13 @@ namespace GraphQLService.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IDbService, DbService>();
+
+            services.AddScoped<ILabRepository, LabRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IListRepository, ListRepository>();
+            services.AddScoped<ISeriesRepository, SeriesRepository>();
+            services.AddScoped<IPointRepository, PointRepository>();
+
             services.AddControllers();
         }
 
