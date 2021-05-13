@@ -1,3 +1,4 @@
+using GraphQL.Server;
 using GraphQLService.DAL;
 using GraphQLService.Query.Implementations;
 using GraphQLService.Query.Interfaces;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GraphQLService.Logic;
+using GraphQLService.Query;
 
 namespace GraphQLService.Api
 {
@@ -36,6 +40,16 @@ namespace GraphQLService.Api
             services.AddScoped<ISeriesRepository, SeriesRepository>();
             services.AddScoped<IPointRepository, PointRepository>();
 
+            services.AddScoped<AppSchema>();
+            services.AddGraphQL()
+                    .AddNewtonsoftJson()
+                    .AddGraphTypes(typeof(AppSchema), ServiceLifetime.Scoped);
+
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
             services.AddControllers();
         }
 
@@ -52,6 +66,9 @@ namespace GraphQLService.Api
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseGraphQL<AppSchema>();
+            app.UseGraphQLPlayground();
 
             app.UseEndpoints(endpoints =>
             {

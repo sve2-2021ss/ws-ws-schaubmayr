@@ -1,4 +1,5 @@
-﻿using GraphQLService.DAL.Database;
+﻿using GraphQLService.DAL;
+using GraphQLService.DAL.Database;
 using System;
 using System.Collections.Generic;
 using System.Text;

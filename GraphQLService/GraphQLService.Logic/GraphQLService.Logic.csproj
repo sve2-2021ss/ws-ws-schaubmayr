@@ -4,4 +4,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="GraphQL" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GraphQLService.DAL\GraphQLService.DAL.csproj" />
+    <ProjectReference Include="..\GraphQLService.Dto\GraphQLService.Dto.csproj" />
+  </ItemGroup>
+
 </Project>
