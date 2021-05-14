@@ -1,0 +1,137 @@
+schema {
+  query: AppQuery
+  mutation: AppMutation
+}
+
+type AppQuery {
+  labs: [LabType]
+  projects: [ProjectType]
+  lists: [ListType]
+  series: [SeriesType]
+  points: [PointType]
+  lab(idLab: ID!): LabType
+  project(idLab: ID!, idProject: ID!): ProjectType
+  serie(idLab: ID!, idProject: ID!, idSeries: ID!): SeriesType
+  list(idLab: ID!, idProject: ID!, idList: ID!): ListType
+  point(idLab: ID!, idProject: ID!, idSeries: ID!, idPoint: ID!): PointType
+}
+
+type LabType {
+  # IdLab
+  idLab: Int!
+
+  # Name
+  name: String!
+
+  # Location
+  location: String!
+
+  # Timestamp
+  timestamp: DateTime
+  projects: [ProjectType]
+  lists: [ListType]
+  series: [SeriesType]
+  points: [PointType]
+}
+
+# The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+scalar DateTime
+
+type ProjectType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # Name
+  name: String!
+
+  # Customer
+  customer: String!
+
+  # Timestamp
+  timestamp: DateTime
+  lists: [ListType]
+  series: [SeriesType]
+  points: [PointType]
+}
+
+type ListType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # IdList
+  idList: Int!
+
+  # Name
+  name: String!
+
+  # Timestamp
+  timestamp: DateTime
+  points: [PointType]
+}
+
+type PointType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # IdSeries
+  idSeries: Int!
+
+  # IdPoint
+  idPoint: Int!
+
+  # IdList
+  idList: Int
+
+  # Name
+  name: String!
+
+  # Timestamp
+  timestamp: DateTime
+}
+
+type SeriesType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # IdSeries
+  idSeries: Int!
+
+  # Name
+  name: String!
+
+  # Timestamp
+  timestamp: DateTime
+  points: [PointType]
+}
+
+type AppMutation {
+  createLab(lab: LabInput!): LabType
+  updateLab(lab: LabInput!, idLab: ID!): LabType
+  deleteLab(idLab: ID!): String
+  createProject(project: ProjectInput!): ProjectType
+  updateProject(project: ProjectInput!, idLab: ID!, idProject: ID!): ProjectType
+  deleteProject(idLab: ID!, idProject: ID!): String
+}
+
+input LabInput {
+  name: String!
+  location: String!
+}
+
+input ProjectInput {
+  idLab: Int!
+  name: String!
+  customer: String!
+}

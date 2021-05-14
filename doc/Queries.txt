@@ -1,0 +1,271 @@
+mutation CreateLab {
+  createLab(lab: { name: "HomeLab", location: "Home" }) {
+    idLab
+    name
+    location
+  }
+}
+--------------------------------------
+{
+  "data": {
+    "createLab": {
+      "idLab": 4,
+      "name": "HomeLab",
+      "location": "Home"
+    }
+  },
+  "extensions": {}
+}
+========================================
+mutation UpdateLab {
+  updateLab(idLab: 3, lab: { name: "SuperLab", location: "Everywhere" }) {
+    idLab
+    name
+    location
+  }
+}
+
+--------------------------------------
+{
+  "data": {
+    "updateLab": {
+      "idLab": 3,
+      "name": "SuperLab",
+      "location": "Everywhere"
+    }
+  },
+  "extensions": {}
+}
+========================================
+
+
+mutation DeleteLab{
+  deleteLab(idLab:3)
+}
+--------------------------------------
+{
+  "errors": [
+    {
+      "message": "Entity does not exist!"
+    }
+  ],
+  "data": {
+    "deleteLab": null
+  },
+  "extensions": {}
+}
+
+========================================
+
+mutation CreateProject {
+  createProject(
+    project: { idLab: 4, name: "GraphQLInsertProject", customer: "GraphQL" }
+  ) {
+    idLab
+    idProject
+    name
+    customer
+  }
+}
+--------------------------------------
+{
+  "data": {
+    "createProject": {
+      "idLab": 4,
+      "idProject": 1,
+      "name": "GraphQLInsertProject",
+      "customer": "GraphQL"
+    }
+  },
+  "extensions": {}
+}
+========================================
+mutation UpdateProject {
+  updateProject(
+    idLab: 4
+    idProject: 1
+    project: {
+      idLab: 4
+      name: "GraphQLInsertProject-Second"
+      customer: "Everything"
+    }
+  ) {
+    idLab
+    idProject
+    name
+    customer
+  }
+}
+
+--------------------------------------
+{
+  "data": {
+    "updateProject": {
+      "idLab": 4,
+      "idProject": 1,
+      "name": "GraphQLInsertProject-Second",
+      "customer": "Everything"
+    }
+  },
+  "extensions": {}
+}
+========================================
+mutation DeleteProject {
+  deleteProject(idLab: 4, idProject: 1)
+}
+
+--------------------------------------
+{
+  "data": {
+    "deleteProject": "Entity deleted successfully"
+  },
+  "extensions": {}
+}
+========================================
+query Labs {
+  lab(idLab:1) {
+    idLab
+    name
+    location
+    projects {
+      idProject
+      name
+      customer
+      lists {
+        idList
+        name
+      }
+      series {
+        idSeries
+        name
+        points {
+          idPoint
+          name
+        }
+      }
+    }
+  }
+}
+----------------------------------------
+{
+  "data": {
+    "lab": {
+      "idLab": 1,
+      "name": "Lab 1",
+      "location": "Linz",
+      "projects": [
+        {
+          "idProject": 1,
+          "name": "L Project 1",
+          "customer": "A",
+          "lists": [
+            {
+              "idList": 1,
+              "name": "List 1 A"
+            },
+            {
+              "idList": 2,
+              "name": "List 2 A"
+            }
+          ],
+          "series": [
+            {
+              "idSeries": 1,
+              "name": "Series 1",
+              "points": [
+                {
+                  "idPoint": 1,
+                  "name": "P1"
+                },
+                {
+                  "idPoint": 2,
+                  "name": "P2"
+                }
+              ]
+            },
+            {
+              "idSeries": 2,
+              "name": "Series 2",
+              "points": [
+                {
+                  "idPoint": 1,
+                  "name": "P3"
+                },
+                {
+                  "idPoint": 2,
+                  "name": "P4"
+                }
+              ]
+            },
+            {
+              "idSeries": 1,
+              "name": "Series 3",
+              "points": []
+            },
+            {
+              "idSeries": 2,
+              "name": "Series 4",
+              "points": []
+            }
+          ]
+        },
+        {
+          "idProject": 2,
+          "name": "W Project 1",
+          "customer": "C",
+          "lists": [
+            {
+              "idList": 1,
+              "name": "List 1 B"
+            },
+            {
+              "idList": 2,
+              "name": "List 2 B"
+            }
+          ],
+          "series": [
+            {
+              "idSeries": 1,
+              "name": "Series 1",
+              "points": [
+                {
+                  "idPoint": 1,
+                  "name": "P1"
+                },
+                {
+                  "idPoint": 2,
+                  "name": "P2"
+                }
+              ]
+            },
+            {
+              "idSeries": 2,
+              "name": "Series 2",
+              "points": [
+                {
+                  "idPoint": 1,
+                  "name": "P3"
+                },
+                {
+                  "idPoint": 2,
+                  "name": "P4"
+                }
+              ]
+            },
+            {
+              "idSeries": 1,
+              "name": "Series 3",
+              "points": []
+            },
+            {
+              "idSeries": 2,
+              "name": "Series 4",
+              "points": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "extensions": {}
+}
