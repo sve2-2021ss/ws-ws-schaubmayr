@@ -11,7 +11,7 @@ namespace GraphQLService.Query.GraphTypes
     public class ProjectType : ObjectGraphType<ProjectDto>
     {
         public ProjectType(IListRepository listRepository,
-             ISeriesRepository seriesRepository)
+             ISeriesRepository seriesRepository, IPointRepository pointRepository)
         {
             Field(x => x.IdLab).Description("IdLab");
             Field(x => x.IdProject).Description("IdProject");
@@ -26,6 +26,10 @@ namespace GraphQLService.Query.GraphTypes
              "series",
              resolve: x => seriesRepository.GetSeriesForLab(x.Source.IdLab)
              );
+            Field<ListGraphType<PointType>>(
+              "points",
+              resolve: x => pointRepository.GetPointsForProject(x.Source.IdLab, x.Source.IdProject)
+          );
         }
     }
 }

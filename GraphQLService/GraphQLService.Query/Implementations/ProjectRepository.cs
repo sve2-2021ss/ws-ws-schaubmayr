@@ -23,6 +23,12 @@ namespace GraphQLService.Query.Implementations
             return _dbService.GetDbContext().Projects.Convert();
         }
 
+        public ProjectDto GetById(int idLab, int idProject)
+        {
+            return _dbService.GetDbContext().Projects
+                .SingleOrDefault(e => e.IdLab == idLab && e.IdProject == idProject)?.Convert();
+        }
+
         public IEnumerable<ProjectDto> GetProjectsForLab(int idLab)
         {
             return _dbService.GetDbContext().Projects.Where(e => e.IdLab == idLab).Convert();

@@ -8,5 +8,6 @@ namespace GraphQLService.Query.Interfaces
     public interface ILabRepository
     {
         IEnumerable<LabDto> GetAll();
+        LabDto GetById(int idLab);
     }
 }

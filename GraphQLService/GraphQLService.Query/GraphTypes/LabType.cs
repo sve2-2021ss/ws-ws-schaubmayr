@@ -13,7 +13,8 @@ namespace GraphQLService.Query.GraphTypes
         public LabType(
             IProjectRepository projectRepository, 
             IListRepository listRepository, 
-            ISeriesRepository seriesRepository)
+            ISeriesRepository seriesRepository,
+            IPointRepository pointRepository)
         {
             Field(x => x.IdLab).Description("IdLab");
             Field(x => x.Name).Description("Name");
@@ -31,6 +32,10 @@ namespace GraphQLService.Query.GraphTypes
               "series",
               resolve: x => seriesRepository.GetSeriesForLab(x.Source.IdLab)
               );
+            Field<ListGraphType<PointType>>(
+             "points",
+             resolve: x => pointRepository.GetPointsForLab(x.Source.IdLab)
+             );
         }
     }
 }

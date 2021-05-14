@@ -8,6 +8,11 @@ namespace GraphQLService.Logic
 {
     public static class DtoConverters
     {
+        /// <summary>
+        /// Converts Lab Entity to LabDto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static LabDto Convert(this Lab entity)
         {
             return new LabDto()
@@ -26,7 +31,11 @@ namespace GraphQLService.Logic
                 yield return item.Convert();
             }
         }
-
+        /// <summary>
+        /// Converts Project Entity to ProjectDto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static ProjectDto Convert(this Project entity)
         {
             return new ProjectDto()
@@ -46,7 +55,11 @@ namespace GraphQLService.Logic
                 yield return item.Convert();
             }
         }
-
+        /// <summary>
+        /// Converts List Entity to ListDto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static ListDto Convert(this List entity)
         {
             return new ListDto()
@@ -66,6 +79,11 @@ namespace GraphQLService.Logic
                 yield return item.Convert();
             }
         }
+        /// <summary>
+        /// Converts Series Entity to SeriesDto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static SeriesDto Convert(this Series entity)
         {
             return new SeriesDto()
@@ -79,6 +97,33 @@ namespace GraphQLService.Logic
         }
 
         public static IEnumerable<SeriesDto> Convert(this IEnumerable<Series> collection)
+        {
+            foreach (var item in collection)
+            {
+                yield return item.Convert();
+            }
+        }
+
+        /// <summary>
+        /// Converts Point Entity to PointDto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static PointDto Convert(this Point entity)
+        {
+            return new PointDto()
+            {
+                IdLab = entity.IdLab,
+                IdProject = entity.IdProject,
+                IdSeries = entity.IdSeries,
+                IdList = entity.IdList,
+                IdPoint = entity.IdPoint,
+                Name = entity.Name,
+                Timestamp = entity.Timestamp
+            };
+        }
+
+        public static IEnumerable<PointDto> Convert(this IEnumerable<Point> collection)
         {
             foreach (var item in collection)
             {

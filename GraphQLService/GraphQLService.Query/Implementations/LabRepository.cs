@@ -22,5 +22,10 @@ namespace GraphQLService.Query.Implementations
         {
             return _dbService.GetDbContext().Labs.Convert();
         }
+
+        public LabDto GetById(int idLab)
+        {
+            return _dbService.GetDbContext().Labs.SingleOrDefault(e => e.IdLab == idLab)?.Convert();
+        }
     }
 }

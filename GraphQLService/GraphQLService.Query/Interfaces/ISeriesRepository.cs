@@ -10,5 +10,6 @@ namespace GraphQLService.Query.Interfaces
         public IEnumerable<SeriesDto> GetAll();
         public IEnumerable<SeriesDto> GetSeriesForProject(int idLab, int idProject);
         public IEnumerable<SeriesDto> GetSeriesForLab(int idLab);
+        public SeriesDto GetById(int idLab, int idProject, int idSeries);
     }
 }

@@ -23,6 +23,13 @@ namespace GraphQLService.Query.Implementations
             return _dbService.GetDbContext().Series.Convert();
         }
 
+        public SeriesDto GetById(int idLab, int idProject, int idSeries)
+        {
+            return _dbService.GetDbContext().Series
+               .SingleOrDefault(e => e.IdLab == idLab && e.IdProject == idProject && e.IdSeries == idSeries)
+               ?.Convert();
+        }
+
         public IEnumerable<SeriesDto> GetSeriesForLab(int idLab)
         {
             return _dbService.GetDbContext().Series.Where(e => e.IdLab == idLab).Convert();
