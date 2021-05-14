@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using GraphQLService.Logic;
+using System.Threading.Tasks;
 
 namespace GraphQLService.Query.Implementations
 {
@@ -16,6 +17,11 @@ namespace GraphQLService.Query.Implementations
         public SeriesRepository(IDbService dbService)
         {
             _dbService = dbService;
+        }
+
+        public Task<SeriesDto> Create(SeriesDto series)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<SeriesDto> GetAll()

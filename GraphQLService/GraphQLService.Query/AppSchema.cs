@@ -1,4 +1,5 @@
 ﻿using GraphQL.Types;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace GraphQLService.Query
     {
         public AppSchema(IServiceProvider provider) : base(provider)
         {
-            Query = (IObjectGraphType)provider.GetService(typeof(AppQuery));
+            Query = (IObjectGraphType)provider.GetRequiredService(typeof(AppQuery));
+            Mutation = (IObjectGraphType)provider.GetRequiredService(typeof(AppMutation));
         }
     }
 }

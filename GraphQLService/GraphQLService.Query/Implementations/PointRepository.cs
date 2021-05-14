@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GraphQLService.Query.Implementations
 {
@@ -17,6 +18,12 @@ namespace GraphQLService.Query.Implementations
         {
             _dbService = dbService;
         }
+
+        public Task<PointDto> Create(PointDto point)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<PointDto> GetAll()
         {
             return _dbService.GetDbContext().Points.Convert();

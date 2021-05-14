@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GraphQLService.Query.Interfaces
 {
@@ -9,5 +10,8 @@ namespace GraphQLService.Query.Interfaces
     {
         IEnumerable<LabDto> GetAll();
         LabDto GetById(int idLab);
+        Task<LabDto> Create(LabDto lab);
+        Task<LabDto> Update(LabDto lab, int idLab);
+        Task<bool> Delete(int idLab);
     }
 }

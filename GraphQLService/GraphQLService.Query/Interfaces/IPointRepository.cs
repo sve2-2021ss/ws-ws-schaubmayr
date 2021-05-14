@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GraphQLService.Query.Interfaces
 {
@@ -13,5 +14,7 @@ namespace GraphQLService.Query.Interfaces
         public IEnumerable<PointDto> GetPointsForList(int idLab, int idProject, int idList);
         public IEnumerable<PointDto> GetPointsForSeries(int idLab, int idProject, int idSeries);
         public PointDto GetById(int idLab, int idProject, int idSeries, int idPoint);
+
+        public Task<PointDto> Create(PointDto point);
     }
 }
