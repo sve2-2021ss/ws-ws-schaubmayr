@@ -19,11 +19,6 @@ namespace GraphQLService.Query.Implementations
             _dbService = dbService;
         }
 
-        public Task<PointDto> Create(PointDto point)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<PointDto> GetAll()
         {
             return _dbService.GetDbContext().Points.Convert();

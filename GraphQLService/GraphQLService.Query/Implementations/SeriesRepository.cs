@@ -19,11 +19,6 @@ namespace GraphQLService.Query.Implementations
             _dbService = dbService;
         }
 
-        public Task<SeriesDto> Create(SeriesDto series)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<SeriesDto> GetAll()
         {
             return _dbService.GetDbContext().Series.Convert();
