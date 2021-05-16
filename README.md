@@ -353,20 +353,138 @@ query Labs {
 ### Mutations
 #### CreateLab
 ##### Request
+```javascript
+mutation CreateLab {
+  createLab(lab: { name: "HomeLab", location: "Home" }) {
+    idLab
+    name
+    location
+  }
+}
+```
 ##### Response
+```javascript
+{
+  "data": {
+    "createLab": {
+      "idLab": 4,
+      "name": "HomeLab",
+      "location": "Home"
+    }
+  },
+  "extensions": {}
+}
+```
 #### UpdateLab
 ##### Request
+```javascript
+mutation UpdateLab {
+  updateLab(idLab: 3, lab: { name: "SuperLab", location: "Everywhere" }) {
+    idLab
+    name
+    location
+  }
+}
+```
 ##### Response
+```javascript
+{
+  "data": {
+    "updateLab": {
+      "idLab": 3,
+      "name": "SuperLab",
+      "location": "Everywhere"
+    }
+  },
+  "extensions": {}
+}
+```
 #### DeleteLab
 ##### Request
+```javascript
+mutation DeleteLab{
+  deleteLab(idLab:3)
+}
+```
 ##### Response
+```javascript
+```
 #### CreateProject
 ##### Request
+```javascript
+mutation CreateProject {
+  createProject(
+    project: { idLab: 4, name: "GraphQLInsertProject", customer: "GraphQL" }
+  ) {
+    idLab
+    idProject
+    name
+    customer
+  }
+}
+```
 ##### Response
+```javascript
+{
+  "data": {
+    "createProject": {
+      "idLab": 4,
+      "idProject": 1,
+      "name": "GraphQLInsertProject",
+      "customer": "GraphQL"
+    }
+  },
+  "extensions": {}
+}
+```
 #### UpdateProject
 ##### Request
+```javascript
+mutation UpdateProject {
+  updateProject(
+    idLab: 4
+    idProject: 1
+    project: {
+      idLab: 4
+      name: "GraphQLInsertProject-Second"
+      customer: "Everything"
+    }
+  ) {
+    idLab
+    idProject
+    name
+    customer
+  }
+}
+```
 ##### Response
+```javascript
+{
+  "data": {
+    "updateProject": {
+      "idLab": 4,
+      "idProject": 1,
+      "name": "GraphQLInsertProject-Second",
+      "customer": "Everything"
+    }
+  },
+  "extensions": {}
+}
+```
 #### DeleteProject
 ##### Request
+```javascript
+mutation DeleteProject {
+  deleteProject(idLab: 4, idProject: 1)
+}
+```
 ##### Response
+```javascript
+{
+  "data": {
+    "deleteProject": "Entity deleted successfully"
+  },
+  "extensions": {}
+}
+```
 ## Conclusio
