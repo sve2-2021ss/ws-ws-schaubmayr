@@ -186,24 +186,416 @@ public class SeriesType : ObjectGraphType<SeriesDto>
     }
 ```
 ## InputObjectGraphTypes
+I chose to create Mutations for Project and Lab only, since it's the same for all other entities.
 ### LabInputType
 ```cs
+public class LabInputType : InputObjectGraphType
+    {
+        public LabInputType()
+        {
+            Name = "LabInput";
+            Field<NonNullGraphType<StringGraphType>>(nameof(LabDto.Name));
+            Field<NonNullGraphType<StringGraphType>>(nameof(LabDto.Location));
+        }
+    }
 ```
 ### ProjectInputType
 ```cs
+ public class ProjectInputType : InputObjectGraphType
+    {
+        public ProjectInputType()
+        {
+            Name = "ProjectInput";
+            Field<NonNullGraphType<IntGraphType>>(nameof(ProjectDto.IdLab));
+            Field<NonNullGraphType<StringGraphType>>(nameof(ProjectDto.Name));
+            Field<NonNullGraphType<StringGraphType>>(nameof(ProjectDto.Customer));
+        }
+    }
 ```
 ## AppQuery
 ```cs
+    public class AppQuery : ObjectGraphType
+    {
+        public AppQuery(
+            ILabRepository labRepository,
+            IProjectRepository projectRepository,
+            IListRepository listRepository,
+             ISeriesRepository seriesRepository,
+             IPointRepository pointRepository)
+        {
+            #region GetAll
+            Field<ListGraphType<LabType>>(
+                "labs",
+                resolve: context => labRepository.GetAll()
+                );
+
+            Field<ListGraphType<ProjectType>>(
+                "projects",
+                resolve: context => projectRepository.GetAll()
+                );
+
+            Field<ListGraphType<ListType>>(
+               "lists",
+               resolve: context => listRepository.GetAll()
+               );
+
+            Field<ListGraphType<SeriesType>>(
+                "series",
+                resolve: context => seriesRepository.GetAll()
+            );
+
+            Field<ListGraphType<PointType>>(
+              "points",
+              resolve: x => pointRepository.GetAll()
+          );
+            #endregion
+            #region GetById
+            Field<LabType>(
+              "lab",
+              arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IdGraphType>> { Name="idLab" }),
+              resolve: context =>
+              {
+                  return labRepository.GetById(context.GetArgument<int>("idLab"));
+              }
+              );
+
+            Field<ProjectType>(
+             "project",
+               arguments: new QueryArguments(
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idProject" }
+                 ),
+             resolve: context =>
+             {
+                 return projectRepository.GetById(
+                   context.GetArgument<int>("idLab"),
+                   context.GetArgument<int>("idProject"));
+             }
+             );
+
+            Field<SeriesType>(
+             "serie",
+               arguments: new QueryArguments(
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idProject" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idSeries" }
+                 ),
+             resolve: context =>
+             {
+                 return seriesRepository.GetById(
+                   context.GetArgument<int>("idLab"),
+                   context.GetArgument<int>("idProject"),
+                   context.GetArgument<int>("idSeries"));
+             }
+             );
+
+            Field<ListType>(
+             "list",
+               arguments: new QueryArguments(
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idProject" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idList" }
+                 ),
+             resolve: context =>
+             {
+                 return listRepository.GetById(
+                   context.GetArgument<int>("idLab"),
+                   context.GetArgument<int>("idProject"),
+                   context.GetArgument<int>("idList"));
+             }
+             );
+
+            Field<PointType>(
+             "point",
+             arguments: new QueryArguments(
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idProject" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idSeries" },
+                 new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idPoint" }
+                 ),
+             resolve: context =>
+             {
+                 return pointRepository.GetById(
+                     context.GetArgument<int>("idLab"),
+                     context.GetArgument<int>("idProject"),
+                     context.GetArgument<int>("idSeries"),
+                     context.GetArgument<int>("idPoint"));
+             }
+             );
+            #endregion
+        }
+    }
 ```
 ## AppMutations
 ```cs
+public class AppMutation : ObjectGraphType
+    {
+        public AppMutation(
+           ILabRepository labRepository,
+           IProjectRepository projectRepository,
+           IListRepository listRepository,
+           ISeriesRepository seriesRepository,
+           IPointRepository pointRepository)
+        {
+            #region LabMutations
+            FieldAsync<LabType>(
+                "createLab",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<LabInputType>> { Name = "lab" }),
+                resolve: async context => await labRepository.Create(context.GetArgument<LabDto>("lab"))
+                );
+
+            FieldAsync<LabType>(
+                "updateLab",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<LabInputType>> { Name = "lab"},
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" }
+                    ),
+                resolve: async context =>
+                {
+                    var lab = context.GetArgument<LabDto>("lab");
+                    var labId = context.GetArgument<int>("idLab");
+
+                    if (labRepository.GetById(labId) == null)
+                    {
+                        context.Errors.Add(new ExecutionError("Entity does not exist!"));
+                        return null;
+                    }
+
+                    return await labRepository.Update(lab, labId);
+
+                });
+
+            FieldAsync<StringGraphType>(
+                "deleteLab",
+                 arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" }
+                    ),
+                resolve: async context =>
+                {
+                    var labId = context.GetArgument<int>("idLab");
+
+                    if (labRepository.GetById(labId) == null)
+                    {
+                        context.Errors.Add(new ExecutionError("Entity does not exist!"));
+                        return null;
+                    }
+
+                    if (await labRepository.Delete(labId))
+                        return "Entity deleted successfully";
+                    else
+                        return "Removing failed!";
+
+                });
+            #endregion
+            #region ProjectMutations
+            FieldAsync<ProjectType>(
+               "createProject",
+               arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ProjectInputType>> { Name = "project" }),
+               resolve: async context => await projectRepository.Create(context.GetArgument<ProjectDto>("project"))
+               );
+
+            FieldAsync<ProjectType>(
+                "updateProject",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<ProjectInputType>> { Name = "project" },
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" },
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idProject" }
+                    ),
+                resolve: async context =>
+                {
+                    var project = context.GetArgument<ProjectDto>("project");
+                    var labId = context.GetArgument<int>("idLab");
+                    var projectId = context.GetArgument<int>("idProject");
+
+                    if (projectRepository.GetById(labId, projectId) == null)
+                    {
+                        context.Errors.Add(new ExecutionError("Entity does not exist!"));
+                        return null;
+                    }
+
+                    return await projectRepository.Update(project, labId, projectId);
+
+                });
+
+            FieldAsync<StringGraphType>(
+                "deleteProject",
+                 arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idLab" },
+                     new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "idProject" }
+                    ),
+                resolve: async context =>
+                {
+                    var labId = context.GetArgument<int>("idLab");
+                    var projectId = context.GetArgument<int>("idProject");
+
+                    if (projectRepository.GetById(labId, projectId) == null)
+                    {
+                        context.Errors.Add(new ExecutionError("Entity does not exist!"));
+                        return null;
+                    }
+
+                    if (await projectRepository.Delete(labId, projectId))
+                        return "Entity deleted successfully";
+                    else
+                        return "Removing failed!";
+
+                });
+            #endregion
+        }
+    }
 ```
 ## AppSchema
 ##### Code
 ```cs
+ public class AppSchema : Schema
+    {
+        public AppSchema(IServiceProvider provider) : base(provider)
+        {
+            Query = (IObjectGraphType)provider.GetRequiredService(typeof(AppQuery));
+            Mutation = (IObjectGraphType)provider.GetRequiredService(typeof(AppMutation));
+        }
+    }
 ```
 ##### Schema displayed in GraphQL Playground
-```cs
+```javascript
+schema {
+  query: AppQuery
+  mutation: AppMutation
+}
+
+type AppQuery {
+  labs: [LabType]
+  projects: [ProjectType]
+  lists: [ListType]
+  series: [SeriesType]
+  points: [PointType]
+  lab(idLab: ID!): LabType
+  project(idLab: ID!, idProject: ID!): ProjectType
+  serie(idLab: ID!, idProject: ID!, idSeries: ID!): SeriesType
+  list(idLab: ID!, idProject: ID!, idList: ID!): ListType
+  point(idLab: ID!, idProject: ID!, idSeries: ID!, idPoint: ID!): PointType
+}
+
+type LabType {
+  # IdLab
+  idLab: Int!
+
+  # Name
+  name: String!
+
+  # Location
+  location: String!
+
+  # Timestamp
+  timestamp: DateTime
+  projects: [ProjectType]
+  lists: [ListType]
+  series: [SeriesType]
+  points: [PointType]
+}
+
+# The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+scalar DateTime
+
+type ProjectType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # Name
+  name: String!
+
+  # Customer
+  customer: String!
+
+  # Timestamp
+  timestamp: DateTime
+  lists: [ListType]
+  series: [SeriesType]
+  points: [PointType]
+}
+
+type ListType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # IdList
+  idList: Int!
+
+  # Name
+  name: String!
+
+  # Timestamp
+  timestamp: DateTime
+  points: [PointType]
+}
+
+type PointType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # IdSeries
+  idSeries: Int!
+
+  # IdPoint
+  idPoint: Int!
+
+  # IdList
+  idList: Int
+
+  # Name
+  name: String!
+
+  # Timestamp
+  timestamp: DateTime
+}
+
+type SeriesType {
+  # IdLab
+  idLab: Int!
+
+  # IdProject
+  idProject: Int!
+
+  # IdSeries
+  idSeries: Int!
+
+  # Name
+  name: String!
+
+  # Timestamp
+  timestamp: DateTime
+  points: [PointType]
+}
+
+type AppMutation {
+  createLab(lab: LabInput!): LabType
+  updateLab(lab: LabInput!, idLab: ID!): LabType
+  deleteLab(idLab: ID!): String
+  createProject(project: ProjectInput!): ProjectType
+  updateProject(project: ProjectInput!, idLab: ID!, idProject: ID!): ProjectType
+  deleteProject(idLab: ID!, idProject: ID!): String
+}
+
+input LabInput {
+  name: String!
+  location: String!
+}
+
+input ProjectInput {
+  idLab: Int!
+  name: String!
+  customer: String!
+}
+
 ```
 ## Tests
 ### Queries
@@ -410,6 +802,14 @@ mutation UpdateLab {
 }
 ```
 #### DeleteLab
+```javascript
+{
+  "data": {
+    "deleteLab": "Entity deleted successfully"
+  },
+  "extensions": {}
+}
+```
 ##### Request
 ```javascript
 mutation DeleteLab{
@@ -498,6 +898,8 @@ mutation DeleteProject {
 }
 ```
 ## Conclusio
-On the first look it seems quite complicated when you are only familiar with REST-Api's, but works out pretty well. It's a very powerful technology. If there are many Endpoints to setup in an Rest-Api, i'll quess GraphQL will be easier than, since the client defines the queries itself.
+On the first look it seems quite complicated when you are only familiar with REST-Api's, but works out pretty well. It's a very powerful technology. If there are many Endpoints to setup in an Rest-Api, i'll quess using GraphQL will be easier, since the client defines the queries itself.
 
 GraphQl works really good with multi-nested Entities.
+
+Next things i would try are Dataloader and AzureAd Authentication
