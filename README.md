@@ -1,9 +1,17 @@
 # GraphQL Project
 ## UseCase
+The Main Goal is to get familiar with GraphQL and to know how much effort it is to use it in a "real" project.
+* How to setup the project. 
+* How to design the Api (Schema first or GraphType first). 
+* How to create Queries and Mutations. 
+* Data with multiple Keys and Relations
+
 ## Architecture
 ![Architecture](https://github.com/sve2-2021ss/ws-ws-schaubmayr/blob/master/doc/Architecture.PNG)
 ## Database
 ![Database](https://github.com/sve2-2021ss/ws-ws-schaubmayr/blob/master/doc/RD.PNG)
+## Dto's
+The Dto's have exactly the same properties like the entities from the Database, therefore they are not displayed here.
 ## Repositories
 ### Lab
 ```cs
@@ -60,6 +68,8 @@
         public PointDto GetById(int idLab, int idProject, int idSeries, int idPoint);
     }
 ```
+## Approach
+I used "GraphType first" because it feels way more "writing code" than "Schema first". Overall i prefer writing code then writing text schemas.
 ## ObjectGraphTypes
 ### LabType
 ```cs
@@ -488,3 +498,6 @@ mutation DeleteProject {
 }
 ```
 ## Conclusio
+On the first look it seems quite complicated when you are only familiar with REST-Api's, but works out pretty well. It's a very powerful technology. If there are many Endpoints to setup in an Rest-Api, i'll quess GraphQL will be easier than, since the client defines the queries itself.
+
+GraphQl works really good with multi-nested Entities.
