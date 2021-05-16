@@ -199,7 +199,7 @@ public class SeriesType : ObjectGraphType<SeriesDto>
 ### Queries
 #### Nested Query - All Tables
 ##### Request
-```json
+```javascript
 query Labs {
   lab(idLab:1) {
     idLab
@@ -226,7 +226,7 @@ query Labs {
 }
 ```
 ##### Response
-```json
+```javascript
 {
   "data": {
     "lab": {
